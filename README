@@ -1,3 +1,11 @@
+My Emacs24 configuration, based on emacs24-starter-kit
+
+All personal customizations go into the "personal" branch.
+ 
+Original README follows.
+
+------------------------------------------------------------------------
+
 This is a Literate Programming fork of the original Emacs Starter Kit
 
 This should provide a saner set of defaults than you get normally with
