@@ -1,0 +1,28 @@
+#+TITLE: Basic configuration settings
+#+STARTUP: showall
+
+* Personal information
+
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Dimiter Naydenov"
+        user-mail-address "dimiter.naydenov@canonical.com")
+#+END_SRC
+
+* Load initial modules
+
+#+BEGIN_SRC emacs-lisp
+  (starter-kit-load "python")
+  ; Does not work yet
+  ;(starter-kit-load "g-client")
+  ; Needs extra config
+  ;(starter-kit-load "gnus")
+  (starter-kit-load "js")
+  (starter-kit-load "misc-recommended")
+#+END_SRC
+
+* Org customizations
+** Enable syntax highlighting in source blocks by default
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+   
