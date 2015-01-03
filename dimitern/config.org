@@ -62,9 +62,11 @@
   (setq delete-selection-mode t)
   (setq shift-select-mode nil)
   
-  ;; Toggle menu with F1, toolbar with C-F1
+  ;; Toggle menu with F1, toolbar with C-F1 and disable both by default
   (global-set-key [f1] 'menu-bar-mode)
   (global-set-key [C-f1] 'tool-bar-mode)
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
   
   ;; Visible whitespace
   (require 'whitespace)
@@ -107,4 +109,55 @@
   (global-set-key (kbd "C-$") 'trgrep) ; search sources only
   (global-set-key (kbd "C-%") 'rgrep) ; search sources and tests
   (global-set-key (kbd "M-#") 'replace-regexp) ; regexp replace in buffer
+#+END_SRC
+
+** Go-specific configuration
+#+BEGIN_SRC emacs-lisp
+  ;; Go-mode
+  (add-to-list 'load-path "~/.emacs.d/elpa/go-mode-20141127.2206/")
+  (require 'go-mode-load)
+  ; go-mode insists on 8-spaces tab, so reset it back to 4
+  (setq tab-width 4)
+  
+  ;; gofmt on save using goimports
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  
+  ;; C-c i goes to imports
+  (add-hook 'go-mode-hook (lambda ()
+                            (local-set-key (kbd "C-c i") 'go-goto-imports)))
+  ;; godef lookup with M-.
+  (add-hook 'go-mode-hook (lambda ()
+                            (local-set-key (kbd "M-.") 'godef-jump)))
+  
+  ;; go-eldoc integration
+  (require 'go-eldoc)
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (set-face-attribute 'eldoc-highlight-function-argument nil
+                      :underline t :foreground "green"
+                      :weight 'bold)
+  
+  ;; gocode - daemon-based autocompletion
+  (add-to-list 'load-path "~/work/go/src/github.com/nsf/gocode/emacs")
+  (require 'auto-complete)
+  (require 'auto-complete-config)
+  (require 'go-autocomplete)
+  (global-set-key (kbd "M-/") 'auto-complete)
+  (global-auto-complete-mode t)
+  
+  ;; goflymake - syntax checking on the fly using flycheck
+  (require 'flycheck)
+  (add-hook 'go-mode-hook 'flycheck-mode)
+  (add-to-list 'load-path "~/work/go/src/github.com/dougm/goflymake")
+  (require 'go-flycheck)
+  
+  ;; go-direx - tree view for go sources (using popwin)
+  (require 'direx)
+  (require 'go-direx)
+  (define-key go-mode-map (kbd "C-c C-t") 'go-direx-pop-to-buffer)
+  ; Show on the right using popwin
+  (require 'popwin)
+  (setq display-buffer-function 'popwin:display-buffer)
+  (push '("^\*go-direx:" :regexp t :position right :width 0.4 :dedicated t :stick t)
+        popwin:special-display-config)
 #+END_SRC
