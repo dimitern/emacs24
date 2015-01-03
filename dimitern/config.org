@@ -2,14 +2,12 @@
 #+STARTUP: showall
 
 * Personal information
-
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Dimiter Naydenov"
         user-mail-address "dimiter.naydenov@canonical.com")
 #+END_SRC
 
 * Load initial modules
-
 #+BEGIN_SRC emacs-lisp
   (starter-kit-load "python")
   ; Does not work yet
@@ -18,11 +16,95 @@
   ;(starter-kit-load "gnus")
   (starter-kit-load "js")
   (starter-kit-load "misc-recommended")
+  (starter-kit-load "org")
 #+END_SRC
 
-* Org customizations
-** Enable syntax highlighting in source blocks by default
+* Emacs & Org Customizations
+** Import shell environment variables
+#+BEGIN_SRC emacs-lisp
+  ;; exec-path-from-shell is installed via ELPA
+  (require 'exec-path-from-shell)
+  (exec-path-from-shell-initialize)
+  
+  ;; GOPATH and GOROOT are need to be set so various tools like godef
+  ;; will work. The same is true for PYTHONPATH
+  (exec-path-from-shell-copy-env "PYTHONPATH")
+  (exec-path-from-shell-copy-env "GOPATH")
+  (exec-path-from-shell-copy-env "GOROOT")
+#+END_SRC 
+
+** Enable syntax highlighting in Org source blocks by default
 #+BEGIN_SRC emacs-lisp
   (setq org-src-fontify-natively t)
 #+END_SRC
+
+** Additional registers for common files
+#+BEGIN_SRC emacs-lisp
+  (set-register ?c '(file . "~/.emacs.d/dimitern/config.org"))
+#+END_SRC
    
+** Globally enable line numbers
+#+BEGIN_SRC emacs-lisp
+  (global-linum-mode t)
+#+END_SRC
+
+** General improvements
+#+BEGIN_SRC emacs-lisp
+  ;; Indentation - 4 spaces per tab, use spaces by default, RET indents
+  (setq tab-width 4)
+  (setq indent-tabs-mode nil)
+  (setq-default indent-tabs-mode nil)
+  (global-set-key (kbd "RET") 'newline-and-indent)
+  
+  ;; Delete selection on keypress, select with C-SPC (not shift+arrows),
+  ;; always show selection
+  (setq highlight-nonselected-windows t)
+  (setq delete-selection-mode t)
+  (setq shift-select-mode nil)
+  
+  ;; Toggle menu with F1, toolbar with C-F1
+  (global-set-key [f1] 'menu-bar-mode)
+  (global-set-key [C-f1] 'tool-bar-mode)
+  
+  ;; Visible whitespace
+  (require 'whitespace)
+  (setq show-trailing-whitespace t)
+  (setq whitespace-style (quote (face tabs spaces trailing space-before-tab empty space-after-tab)))
+  
+  ;; Colum numbers, size, and matching parens - all visible
+  (setq column-number-mode t)
+  (setq size-indication-mode t)
+  (require 'paren)
+  (show-paren-mode t)
+  
+  ;; No double space at end of sentences; newline at EOF
+  (setq sentence-end-double-space nil)
+  (setq require-final-newline t)
+  
+  ;; Highlight searches
+  (setq search-highlight t)
+  
+  ;; Improve smooth scrolling
+  (setq redisplay-dont-pause t
+    scroll-margin 1
+    scroll-step 1
+    scroll-conservatively 10000
+    scroll-preserve-screen-position 1)
+#+END_SRC
+
+** Smart Grep search/replace
+#+BEGIN_SRC emacs-lisp
+  ;; Very useful for Golang projects - recursive search skipping tests
+  (defun trgrep ()
+    "Runs `rgrep` with --exclude=*_test.go."
+    (interactive)
+    (progn
+      (grep-compute-defaults)
+      (let ((grep-find-ignored-files grep-find-ignored-files))
+        (add-to-list 'grep-find-ignored-files "*_test.go")
+        (call-interactively 'rgrep))))
+  
+  (global-set-key (kbd "C-$") 'trgrep) ; search sources only
+  (global-set-key (kbd "C-%") 'rgrep) ; search sources and tests
+  (global-set-key (kbd "M-#") 'replace-regexp) ; regexp replace in buffer
+#+END_SRC
