@@ -17,6 +17,10 @@
   (starter-kit-load "js")
   (starter-kit-load "misc-recommended")
   (starter-kit-load "org")
+  
+  ;; Load color theme solarized-dark
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/solarized")
+  (load-theme 'solarized-dark t t)
 #+END_SRC
 
 * Emacs & Org Customizations
@@ -62,11 +66,14 @@
   (setq delete-selection-mode t)
   (setq shift-select-mode nil)
   
-  ;; Toggle menu with F1, toolbar with C-F1 and disable both by default
+  ;; Toggle menu with F1, toolbar with C-F1
   (global-set-key [f1] 'menu-bar-mode)
   (global-set-key [C-f1] 'tool-bar-mode)
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
+  ;; Disable menu, toolbar and scroll bar in window system
+  (when window-system
+    (tool-bar-mode -1)
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1))
   
   ;; Visible whitespace
   (require 'whitespace)
@@ -117,7 +124,7 @@
   (add-to-list 'load-path "~/.emacs.d/elpa/go-mode-20141127.2206/")
   (require 'go-mode-load)
   ; go-mode insists on 8-spaces tab, so reset it back to 4
-  (setq tab-width 4)
+  (setq-default tab-width 4)
   
   ;; gofmt on save using goimports
   (setq gofmt-command "goimports")
@@ -160,4 +167,25 @@
   (setq display-buffer-function 'popwin:display-buffer)
   (push '("^\*go-direx:" :regexp t :position right :width 0.4 :dedicated t :stick t)
         popwin:special-display-config)
+#+END_SRC
+
+** Backups & History
+#+BEGIN_SRC emacs-lisp
+  ;; Use ~/.emacs.d/backups for all backups
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+  ;; Disk space is cheap - save lots.
+  (setq delete-old-versions -1)
+  (setq version-control t)
+  (setq vc-make-backup-files t)
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+  ;; History
+  (setq savehist-file "~/.emacs.d/savehist")
+  (savehist-mode 1)
+  (setq history-length t)
+  (setq history-delete-duplicates t)
+  (setq savehist-save-minibuffer-history 1)
+  (setq savehist-additional-variables
+        '(kill-ring
+          search-ring
+          regexp-search-ring))
 #+END_SRC
