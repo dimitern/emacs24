@@ -151,12 +151,18 @@
   (require 'go-autocomplete)
   (global-set-key (kbd "M-/") 'auto-complete)
   (global-auto-complete-mode t)
+  ; disable auto-complete to start automatically as you type; only start
+  ; on M-/
+  (setq ac-auto-start nil)
   
   ;; goflymake - syntax checking on the fly using flycheck
   (require 'flycheck)
   (add-hook 'go-mode-hook 'flycheck-mode)
   (add-to-list 'load-path "~/work/go/src/github.com/dougm/goflymake")
   (require 'go-flycheck)
+  ; disable automatic checking on save, as this might cause generated
+  ; "flycheck_*.go" files to interferre with building or running tests.
+  (setq flycheck-check-syntax-automatically '(mode-enabled new-line idle-change))
   
   ;; go-direx - tree view for go sources (using popwin)
   (require 'direx)
