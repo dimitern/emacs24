@@ -154,6 +154,10 @@
   ; disable auto-complete to start automatically as you type; only start
   ; on M-/
   (setq ac-auto-start nil)
+  ;; force ido not to autocomplete whatever is at point on C-x C-f (very
+  ;; annoying!)
+  (setq ido-auto-merge-work-directories-length -1)
+  (setq-local ido-use-filename-at-point nil)
   
   ;; goflymake - syntax checking on the fly using flycheck
   (require 'flycheck)
