@@ -66,14 +66,18 @@
   (setq delete-selection-mode t)
   (setq shift-select-mode nil)
   
-  ;; Toggle menu with F1, toolbar with C-F1
+  ;; Toggle menu with F1, toolbar with C-F1, scrollbar with C-F2.
   (global-set-key [f1] 'menu-bar-mode)
   (global-set-key [C-f1] 'tool-bar-mode)
-  ;; Disable menu, toolbar and scroll bar in window system
-  (when window-system
-    (tool-bar-mode -1)
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1))
+  (global-set-key [C-f2] 'scroll-bar-mode)
+  
+  ;; C-x C-k = kill-some-buffers
+  (global-set-key (kbd "C-x C-k") 'kill-some-buffers)
+  
+  ;; Disable menu, toolbar and scroll bar by default.
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
   
   ;; Visible whitespace
   (require 'whitespace)
@@ -126,16 +130,27 @@
   ; go-mode insists on 8-spaces tab, so reset it back to 4
   (setq-default tab-width 4)
   
+  ;; ignore 'go test -c' files
+  (push ".test" completion-ignored-extensions)
+  ;; run tests with 'go test -v'
+  (setq go-test-verbose t)
+  
   ;; gofmt on save using goimports
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   
-  ;; C-c i goes to imports
+  ;; Useful Go keybindings.
   (add-hook 'go-mode-hook (lambda ()
-                            (local-set-key (kbd "C-c i") 'go-goto-imports)))
-  ;; godef lookup with M-.
-  (add-hook 'go-mode-hook (lambda ()
-                            (local-set-key (kbd "M-.") 'godef-jump)))
+    (local-set-key (kbd "C-c i") 'go-goto-imports)
+    (local-set-key (kbd "M-.") 'godef-jump)
+    (local-set-key (kbd "C-c h") 'go-coverage)
+    (local-set-key (kbd "C-c d") 'godoc-at-point)
+    (local-set-key (kbd "C-c c") 'go-test-current-coverage)
+    (local-set-key (kbd "C-c t") 'go-test-current-test)
+    (local-set-key (kbd "C-c f") 'go-test-current-file)
+    (local-set-key (kbd "C-c p") 'go-test-current-project)
+    (local-set-key (kbd "C-c x") 'go-run)
+  ))
   
   ;; go-eldoc integration
   (require 'go-eldoc)
