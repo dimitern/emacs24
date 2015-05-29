@@ -73,7 +73,7 @@
   
   ;; More convenient bindings for killing buffers
   ;; C-x k   = kill-this-buffer (non-interactive - most commonly used)
-  ;; C-c k   = ido-kill-buffer (interactively
+  ;; C-c k   = ido-kill-buffer (interactively)
   ;; C-x C-k = kill-some-buffers (interactively, asking for each buffer)
   (global-set-key (kbd "C-x C-k") 'kill-some-buffers)
   (global-set-key (kbd "C-x k") 'kill-this-buffer)
@@ -108,6 +108,26 @@
     scroll-step 1
     scroll-conservatively 10000
     scroll-preserve-screen-position 1)
+  
+  ;; Make window splits more useful:
+  ;; C-x 2 - vertical split with current and previous buffers
+  ;; C-x 3 - horizontal split with current and previous buffers
+  ;; Source: http://www.reddit.com/r/emacs/comments/25v0eo/you_emacs_tips_and_tricks/chldury
+  (defun my/vsplit-last-buffer (prefix)
+    "Split the window vertically and display the previous buffer."
+    (interactive "p")
+    (split-window-vertically)
+    (other-window 1 nil)
+    (if (= prefix 1)
+      (switch-to-next-buffer)))
+  (defun my/hsplit-last-buffer (prefix)
+    "Split the window horizontally and display the previous buffer."
+    (interactive "p")
+    (split-window-horizontally)
+    (other-window 1 nil)
+    (if (= prefix 1) (switch-to-next-buffer)))
+  (global-set-key (kbd "C-x 2") 'my/vsplit-last-buffer)
+  (global-set-key (kbd "C-x 3") 'my/hsplit-last-buffer)
 #+END_SRC
 
 ** Smart Grep search/replace
@@ -144,7 +164,7 @@
   (setq gofmt-command "goimports")
   (add-hook 'before-save-hook 'gofmt-before-save)
   
-  ;; Useful Go keybindings.
+  ;; Useful Go key bindings.
   (add-hook 'go-mode-hook (lambda ()
     (local-set-key (kbd "C-c i") 'go-goto-imports)
     (local-set-key (kbd "M-.") 'godef-jump)
