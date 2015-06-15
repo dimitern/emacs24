@@ -84,6 +84,9 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   
+  ;; Python - autopep8 on save; C-/ = undo
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+   
   ;; Visible whitespace
   (require 'whitespace)
   (setq show-trailing-whitespace t)
