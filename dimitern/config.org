@@ -84,9 +84,14 @@
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
   
-  ;; Python - autopep8 on save; C-/ = undo
+  ;; Python - autopep8 on save; M-. = info-lookup-symbol
+  (add-to-list 'load-path "~/.emacs.d/dimitern/python-info")
+  (require 'pydoc-info)
+  (add-hook 'python-mode-hook (lambda ()
+    (local-set-key (kbd "M-.") 'info-lookup-symbol)
+  ))
   (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-   
+  
   ;; Visible whitespace
   (require 'whitespace)
   (setq show-trailing-whitespace t)
