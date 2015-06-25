@@ -72,11 +72,11 @@
   (global-set-key [C-f2] 'scroll-bar-mode)
   
   ;; More convenient bindings for killing buffers
-  ;; C-x k   = kill-this-buffer (non-interactive - most commonly used)
+  ;; C-x k   = kill-buffer (non-interactive, only if changed - most commonly used)
   ;; C-c k   = ido-kill-buffer (interactively)
   ;; C-x C-k = kill-some-buffers (interactively, asking for each buffer)
   (global-set-key (kbd "C-x C-k") 'kill-some-buffers)
-  (global-set-key (kbd "C-x k") 'kill-this-buffer)
+  (global-set-key (kbd "C-x k") (lambda()(interactive)(kill-buffer nil)))
   (global-set-key (kbd "C-c k") 'ido-kill-buffer)
   
   ;; Disable menu, toolbar and scroll bar by default.
