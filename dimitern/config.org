@@ -176,7 +176,12 @@
   (add-hook 'go-mode-hook (lambda ()
     (local-set-key (kbd "C-c i") 'go-goto-imports)
     (local-set-key (kbd "M-.") 'godef-jump)
-    (local-set-key (kbd "C-c h") (lambda()(interactive)(go-coverage "cover")))
+    (local-set-key (kbd "C-c h") (lambda ()
+                                   (interactive)
+                                   (go-coverage
+                                    (if (boundp 'go--coverage-current-file-name)
+                                        go--coverage-current-file-name
+                                      "cover"))))
     (local-set-key (kbd "C-c d") 'godoc-at-point)
     (local-set-key (kbd "C-c c") 'go-test-current-coverage)
     (local-set-key (kbd "C-c t") 'go-test-current-test)
