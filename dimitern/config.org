@@ -45,6 +45,8 @@
 ** Additional registers for common files
 #+BEGIN_SRC emacs-lisp
   (set-register ?c '(file . "~/.emacs.d/dimitern/config.org"))
+  (set-register ?j '(file . "~/.juju/environsments.yaml"))
+  (set-register ?b '(file . "~/.bashrc"))
 #+END_SRC
    
 ** Globally enable line numbers
