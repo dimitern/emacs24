@@ -219,14 +219,12 @@
   (add-hook 'go-mode-hook 'flycheck-mode)
   (add-to-list 'load-path "~/work/go/src/github.com/dougm/goflymake")
   (require 'go-flycheck)
-  ; disable automatic checking on save, as this might cause generated
-  ; "flycheck_*.go" files to interferre with building or running tests.
-  (setq flycheck-check-syntax-automatically '(mode-enabled new-line idle-change))
   
   ; change the flycheck default command prefix from C-c ! to C-c C-1
   (define-key flycheck-mode-map flycheck-keymap-prefix nil)
   (setq flycheck-keymap-prefix (kbd "C-c C-1"))
   (define-key flycheck-mode-map flycheck-keymap-prefix flycheck-command-map)
+  (setq flycheck-check-syntax-automatically '(save))
   
   ;; go-direx - tree view for go sources (using popwin)
   (require 'direx)
