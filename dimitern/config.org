@@ -178,6 +178,7 @@
   (add-hook 'go-mode-hook (lambda ()
     (local-set-key (kbd "C-c i") 'go-goto-imports)
     (local-set-key (kbd "M-.") 'godef-jump)
+    (local-set-key (kbd "C-M-.") 'godef-jump-other-window)
     (local-set-key (kbd "C-c h") (lambda ()
                                    (interactive)
                                    (go-coverage
@@ -205,7 +206,7 @@
   (require 'auto-complete-config)
   (require 'go-autocomplete)
   (global-set-key (kbd "M-/") 'auto-complete)
-  (global-auto-complete-mode t)
+  (global-auto-complete-mode)
   ; disable auto-complete to start automatically as you type; only start
   ; on M-/
   (setq ac-auto-start nil)
