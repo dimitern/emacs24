@@ -46,8 +46,11 @@ mail
 *.SCORE
 marks
 .session
+session.*
 abbrev_defs
 scratch
+%backup%*
+*/python-info/*
 secret.org
 .emacs.desktop*
 .*~
