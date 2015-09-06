@@ -163,91 +163,96 @@
 
 ** Go-specific configuration
 #+BEGIN_SRC emacs-lisp
-      ;; Go-mode
-      (add-to-list 'load-path "~/.emacs.d/elpa/go-mode-20141127.2206/")
-      (require 'go-mode-load)
-      ; go-mode insists on 8-spaces tab, so reset it back to 4
-      (setq-default tab-width 4)
+  ;; Go-mode
+  (add-to-list 'load-path "~/.emacs.d/elpa/go-mode-20141127.2206/")
+  (require 'go-mode-load)
+  ; go-mode insists on 8-spaces tab, so reset it back to 4
+  (setq-default tab-width 4)
+  
+  ;; ignore 'go test -c' files
+  (push ".test" completion-ignored-extensions)
+  ;; run tests with 'go test -v'
+  (setq go-test-verbose t)
+  
+  ;; gofmt on save using goimports
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  
+  ;; golint
+  (add-to-list 'load-path "$GOPATH/src/github.com/golang/lint/misc/emacs")
+  (require 'golint)
+  
+  ;; Useful Go key bindings.
+  (add-hook 'go-mode-hook (lambda ()
+    (local-set-key (kbd "C-c i") 'go-goto-imports)
+    (local-set-key (kbd "M-.") 'godef-jump)
+    (local-set-key (kbd "C-M-.") 'godef-jump-other-window)
+    (local-set-key (kbd "C-c h") (lambda ()
+                                   (interactive)
+                                   (go-coverage
+                                    (if (boundp 'go--coverage-current-file-name)
+                                        go--coverage-current-file-name
+                                      "cover"))))
+    (local-set-key (kbd "C-c d") 'godoc-at-point)
+    (local-set-key (kbd "C-c c") 'go-test-current-coverage)
+    (local-set-key (kbd "C-c t") 'go-test-current-test)
+    (local-set-key (kbd "C-c f") 'go-test-current-file)
+    (local-set-key (kbd "C-c p") 'go-test-current-project)
+    (local-set-key (kbd "C-c x") 'go-run)
+    (local-set-key (kbd "C-c l") 'golint)
+  ))
+  
+  ;; go-eldoc integration
+  (require 'go-eldoc)
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (set-face-attribute 'eldoc-highlight-function-argument nil
+                      :underline t :foreground "green"
+                      :weight 'bold)
+  
+  ;; gocode - daemon-based autocompletion
+  (add-to-list 'load-path "$GOPATH/src/github.com/nsf/gocode/emacs")
+  (require 'auto-complete)
+  (require 'auto-complete-config)
+  (require 'go-autocomplete)
+  (global-set-key (kbd "M-/") 'auto-complete)
+  (global-auto-complete-mode t)
       
-      ;; ignore 'go test -c' files
-      (push ".test" completion-ignored-extensions)
-      ;; run tests with 'go test -v'
-      (setq go-test-verbose t)
-      
-      ;; gofmt on save using goimports
-      (setq gofmt-command "goimports")
-      (add-hook 'before-save-hook 'gofmt-before-save)
-      
-      ;; Useful Go key bindings.
-      (add-hook 'go-mode-hook (lambda ()
-        (local-set-key (kbd "C-c i") 'go-goto-imports)
-        (local-set-key (kbd "M-.") 'godef-jump)
-        (local-set-key (kbd "C-M-.") 'godef-jump-other-window)
-        (local-set-key (kbd "C-c h") (lambda ()
-                                       (interactive)
-                                       (go-coverage
-                                        (if (boundp 'go--coverage-current-file-name)
-                                            go--coverage-current-file-name
-                                          "cover"))))
-        (local-set-key (kbd "C-c d") 'godoc-at-point)
-        (local-set-key (kbd "C-c c") 'go-test-current-coverage)
-        (local-set-key (kbd "C-c t") 'go-test-current-test)
-        (local-set-key (kbd "C-c f") 'go-test-current-file)
-        (local-set-key (kbd "C-c p") 'go-test-current-project)
-        (local-set-key (kbd "C-c x") 'go-run)
-      ))
-      
-      ;; go-eldoc integration
-      (require 'go-eldoc)
-      (add-hook 'go-mode-hook 'go-eldoc-setup)
-      (set-face-attribute 'eldoc-highlight-function-argument nil
-                          :underline t :foreground "green"
-                          :weight 'bold)
-      
-      ;; gocode - daemon-based autocompletion
-      (add-to-list 'load-path "~/work/go/src/github.com/nsf/gocode/emacs")
-      (require 'auto-complete)
-      (require 'auto-complete-config)
-      (require 'go-autocomplete)
-      (global-set-key (kbd "M-/") 'auto-complete)
-      (global-auto-complete-mode t)
+  ;; disable auto-complete to start automatically as you type; only start
+  ;; on M-/
+  (setq ac-auto-start nil)
     
-      ;; disable auto-complete to start automatically as you type; only start
-      ;; on M-/
-      (setq ac-auto-start nil)
+  ;; enable auto-complete for all modes by default.
+  (defun auto-complete-mode-maybe ()
+    "No maybe for you. Only AC!"
+    (unless (minibufferp (current-buffer))
+      (auto-complete-mode 1)))
+    
+  ;; force ido not to autocomplete whatever is at point on C-x C-f (very
+  ;; annoying!)
+  (setq ido-auto-merge-work-directories-length -1)
+  (setq ido-use-filename-at-point nil)
   
-      ;; enable auto-complete for all modes by default.
-      (defun auto-complete-mode-maybe ()
-        "No maybe for you. Only AC!"
-        (unless (minibufferp (current-buffer))
-          (auto-complete-mode 1)))
+  ;; goflymake - syntax checking on the fly using flycheck
+  (add-to-list 'load-path (concat (getenv "GOPATH") "/src/github.com/dougm/goflymake"))
+  (require 'go-flycheck)
+  (require 'flycheck)
+  (add-hook 'go-mode-hook 'flycheck-mode)
   
-      ;; force ido not to autocomplete whatever is at point on C-x C-f (very
-      ;; annoying!)
-      (setq ido-auto-merge-work-directories-length -1)
-      (setq ido-use-filename-at-point nil)
-      
-      ;; goflymake - syntax checking on the fly using flycheck
-      (require 'flycheck)
-      (add-hook 'go-mode-hook 'flycheck-mode)
-      (add-to-list 'load-path "~/work/go/src/github.com/dougm/goflymake")
-      (require 'go-flycheck)
-      
-      ; change the flycheck default command prefix from C-c ! to C-c C-1
-      (define-key flycheck-mode-map flycheck-keymap-prefix nil)
-      (setq flycheck-keymap-prefix (kbd "C-c C-1"))
-      (define-key flycheck-mode-map flycheck-keymap-prefix flycheck-command-map)
-      (setq flycheck-check-syntax-automatically '(save))
-      
-      ;; go-direx - tree view for go sources (using popwin)
-      (require 'direx)
-      (require 'go-direx)
-      (define-key go-mode-map (kbd "C-c C-t") 'go-direx-pop-to-buffer)
-      ; Show on the right using popwin
-      (require 'popwin)
-      (setq display-buffer-function 'popwin:display-buffer)
-      (push '("^\*go-direx:" :regexp t :position right :width 0.4 :dedicated t :stick t)
-            popwin:special-display-config)
+  ; change the flycheck default command prefix from C-c ! to C-c C-1
+  (define-key flycheck-mode-map flycheck-keymap-prefix nil)
+  (setq flycheck-keymap-prefix (kbd "C-c C-1"))
+  (define-key flycheck-mode-map flycheck-keymap-prefix flycheck-command-map)
+  (setq flycheck-check-syntax-automatically '(save))
+  
+  ;; go-direx - tree view for go sources (using popwin)
+  (require 'direx)
+  (require 'go-direx)
+  (define-key go-mode-map (kbd "C-c C-t") 'go-direx-pop-to-buffer)
+  ; Show on the right using popwin
+  (require 'popwin)
+  (setq display-buffer-function 'popwin:display-buffer)
+  (push '("^\*go-direx:" :regexp t :position right :width 0.4 :dedicated t :stick t)
+        popwin:special-display-config)
 #+END_SRC
 
 ** PHP Specific
