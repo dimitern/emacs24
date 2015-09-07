@@ -17,7 +17,7 @@
   (starter-kit-load "js")
   (starter-kit-load "misc-recommended")
   (starter-kit-load "org")
-  
+
   ;; Load color theme solarized-dark
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/solarized")
   (load-theme 'solarized-dark t t)
@@ -89,8 +89,7 @@
   
   ;; ERC 5.3 + extras (from source)
   (add-to-list 'load-path "~/.emacs.d/src/erc-5.3-extras")
-  (add-to-list 'load-path "~/.emacs.d/src/erc-5.3")
-  (require 'erc)
+  (require 'erc-nicklist)
   ;; ERC global binding: C-x C-M-e
   (global-set-key (kbd "C-x C-M-e") 'erc)
   
