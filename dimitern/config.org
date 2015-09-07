@@ -76,6 +76,8 @@
   (global-set-key [f1] 'menu-bar-mode)
   (global-set-key [C-f1] 'tool-bar-mode)
   (global-set-key [C-f2] 'scroll-bar-mode)
+  ;; Toggle Speedbar with F2
+  (global-set-key [f2] 'speedbar)
   
   ;; More convenient bindings for killing buffers
   ;; C-x k   = kill-buffer (non-interactive, only if changed - most commonly used)
@@ -85,10 +87,20 @@
   (global-set-key (kbd "C-x k") (lambda()(interactive)(kill-buffer nil)))
   (global-set-key (kbd "C-c k") 'ido-kill-buffer)
   
+  ;; ERC 5.3 + extras (from source)
+  (add-to-list 'load-path "~/.emacs.d/src/erc-5.3-extras")
+  (add-to-list 'load-path "~/.emacs.d/src/erc-5.3")
+  (require 'erc)
+  ;; ERC global binding: C-x C-M-e
+  (global-set-key (kbd "C-x C-M-e") 'erc)
+  
   ;; Disable menu, toolbar and scroll bar by default.
   (tool-bar-mode -1)
   (menu-bar-mode -1)
   (scroll-bar-mode -1)
+  
+  ;; Enable Speedbar by default
+  (speedbar)
   
   ;; Python - autopep8 on save; M-. = info-lookup-symbol
   (add-to-list 'load-path "~/.emacs.d/dimitern/python-info")
