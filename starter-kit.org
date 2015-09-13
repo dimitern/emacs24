@@ -441,6 +441,7 @@ After we've loaded all the Starter Kit defaults, lets load the User's stuff.
 #+name: m-x-customize-customizations
 #+begin_src emacs-lisp
   (load custom-file 'noerror)
+  (load-theme 'solarized-dark t t)
 #+end_src
 
 * Footnotes
@@ -450,3 +451,4 @@ After we've loaded all the Starter Kit defaults, lets load the User's stuff.
 
 [2] The emacs starter kit uses [[http://orgmode.org/][Org Mode]] to load embedded elisp code
     directly from literate Org-mode documents.
+

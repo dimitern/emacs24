@@ -23,6 +23,7 @@ Replace the Python mode that comes with Emacs by the Python mode
 supplied by the Python distribution itself.
 #+begin_src emacs-lisp
 (require 'python-mode)
+(setenv "TERM" "xterm-256color")
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 #+end_src

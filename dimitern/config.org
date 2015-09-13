@@ -9,18 +9,14 @@
 
 * Load initial modules
 #+BEGIN_SRC emacs-lisp
-  (starter-kit-load "python")
   ; Does not work yet
   ;(starter-kit-load "g-client")
   ; Needs extra config
   ;(starter-kit-load "gnus")
+  (starter-kit-load "python")
   (starter-kit-load "js")
   (starter-kit-load "misc-recommended")
   (starter-kit-load "org")
-
-  ;; Load color theme solarized-dark
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/solarized")
-  (load-theme 'solarized-dark t t)
 #+END_SRC
 
 * Emacs & Org Customizations
@@ -35,11 +31,20 @@
   (exec-path-from-shell-copy-env "PYTHONPATH")
   (exec-path-from-shell-copy-env "GOPATH")
   (exec-path-from-shell-copy-env "GOROOT")
+  ;; Inheriad TERM rather than using the default "dumb".
+  (exec-path-from-shell-copy-env "TERM")
   
   ;; CDPATH including $GOPATH/src makes it easy to do e.g. cd
   ;; github.com/juju/juju/ directly.
   (exec-path-from-shell-copy-env "CDPATH")
 #+END_SRC 
+
+** Color theme
+#+BEGIN_SRC emacs-lisp
+  ;; Load color theme solarized-dark
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/solarized")
+  ;;(add-hook 'after-init-hook '(lambda() (load-theme 'solarized-dark t t))
+#+END_SRC
 
 ** Enable syntax highlighting in Org source blocks by default
 #+BEGIN_SRC emacs-lisp
@@ -174,9 +179,8 @@
 
 ** Go-specific configuration
 #+BEGIN_SRC emacs-lisp
-  ;; Go-mode
-  (add-to-list 'load-path "~/.emacs.d/elpa/go-mode-20141127.2206/")
-  (require 'go-mode-load)
+  ;; Go-mode (installed via elpa)
+  (require 'go-mode-autoloads)
   ; go-mode insists on 8-spaces tab, so reset it back to 4
   (setq-default tab-width 4)
   

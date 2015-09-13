@@ -5,6 +5,13 @@
 ;; This is the first thing to get loaded.
 ;;
 
+(add-to-list 'load-path (concat (getenv "HOME") "/.emacs.d/src/benchmark-init-el-master"))
+(require 'benchmark-init-loaddefs)
+(benchmark-init/activate)
+
+(add-hook 'emacs-startup-hook 'benchmark-init/show-durations-tree)
+;(add-hook 'debugger-mode-hook '(lambda() (progn (save-some-buffers t)(kill-emacs))))
+
 ;; load Org-mode from source when the ORG_HOME environment variable is set
 (when (getenv "ORG_HOME")
   (let ((org-lisp-dir (expand-file-name "lisp" (getenv "ORG_HOME"))))
@@ -26,4 +33,14 @@
     ;; load up the starter kit
     (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))))
 
+
+;;(defun my/set-term-hook()
+;;  (setenv "TERM" "xterm"))
+
+;;(add-hook 'tty-setup-hook 'my/set-term-hook)
+;;(add-hook 'term-setup-hook 'my/set-term-hook)
+;;(add-hook 'window-setup-hook 'my/set-term-hook)
+;;(add-hook 'emacs-startup-hook 'my/set-term-hook)
+
 ;;; init.el ends here
+
